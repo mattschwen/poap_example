@@ -1,0 +1,10 @@
+---
+- name: restart isc-dhcp-server.service
+  service:
+    name=isc-dhcp-server.service
+    state=restarted
+
+- name: restart xinetd
+  service:
+    name=xinetd.service
+    state=restarted
