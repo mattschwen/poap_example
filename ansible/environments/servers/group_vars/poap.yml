@@ -1,13 +1,29 @@
+---
+#
 dhcp_reservations:
-  - boot_filename: '{{ image }}',
-    fixed_address: '2.2.2.2',
-    name: new_switch,
-    routers: '2.2.2.1',
-    sn: FOC232323232323,
-    subnet: '255.255.255.0',
-    tftp_server_address: '{{ scp_server }}'
+  - name: new_switch_1 # hostname of the new switch
+    sn: FOC232323232323 # Serial number of the switch
+    fixed_address: '2.2.2.2' # Address you are giving the switch
+    subnet: '{{ management_netmask }}' # Subnet of switch fixed address
+    default_gateway: '{{ management_gateway }}' # default gateway
+    tftp_server_address: '{{ tftp_server }}' # scp, tftp, and dhcp are all the same server
+    boot_filename: '{{ image }}' # Image name specified below
+  - name: new_switch_2
+    sn: FOC242424242424
+    fixed_address: '2.2.2.3'
+    subnet: '{{ management_netmask }}'
+    default_gateway: '{{ management_gateway }}'
+    tftp_server_address: '{{ tftp_server }}'
+    boot_filename: '{{ image }}'
 
+# POAP
 image: nxos.7.0.3.I4.8a.bin
 tftp_server: 1.1.1.1
 scp_server: 1.1.1.1
 script_name: poap.py
+
+# Management Network
+management_network: 2.2.2.0
+management_netmask: 255.255.255.0
+management_broadcast: 2.2.2.255
+management_gateway: 2.2.2.1

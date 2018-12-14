@@ -51,63 +51,15 @@
     group=poap
     mode=0755
 
-- name: setup configuration files for the SanJose switch Nexus9k
+- name: setup configuration files for switch
   template:
-    src=sj_config_nexus9k.cfg.j2
+    src=switch.cfg.j2
     dest=/var/lib/tftpboot/conf.{{ item.sn }}
     owner=poap
     group=poap
     mode=0755
   with_items: "{{ dhcp_reservations }}"
-  when: item.location == 'sanjose' and item.type == 'nexus9k'
 
-- name: setup configuration files for the SanJose switch Nexus3K
-  template:
-    src=sj_config_nexus3k.cfg.j2
-    dest=/var/lib/tftpboot/conf.{{ item.sn }}
-    owner=poap
-    group=poap
-    mode=0755
-  with_items: "{{ dhcp_reservations }}"
-  when: item.location == 'sanjose' and item.type == 'nexus3k'
-
-- name: setup configuration files for the Hillsboro switch Nexus9k
-  template:
-    src=or1_config_nexus9k.cfg.j2
-    dest=/var/lib/tftpboot/conf.{{ item.sn }}
-    owner=poap
-    group=poap
-    mode=0755
-  with_items: "{{ dhcp_reservations }}"
-  when: item.location == 'hillsboro' and item.type == 'nexus9k'
-
-- name: setup configuration files for the Hillsboro switch Nexus3k
-  template:
-    src=or1_config_nexus3k.cfg.j2
-    dest=/var/lib/tftpboot/conf.{{ item.sn }}
-    owner=poap
-    group=poap
-    mode=0755
-  with_items: "{{ dhcp_reservations }}"
-  when: item.location == 'hillsboro' and item.type == 'nexus3k'
-
-- name: setup configuration files for the Lehi switch Nexus3k
-  template:
-    src=lehi_config_nexus3k.cfg.j2
-    dest=/var/lib/tftpboot/conf.{{ item.sn }}
-    owner=poap
-    group=poap
-    mode=0755
-  with_items: "{{ dhcp_reservations }}"
-  when: item.location == 'lehi' and item.type == 'nexus3k'
-
-- name: create python script to which creates md5 files
-  template:
-    src=createmd5.py.j2
-    dest=/var/lib/tftpboot/createmd5.py
-    owner=poap
-    group=poap
-    mode=0755
-
+# This script is done in python 2.7
 - name: execute createmd5.py python script
   command: '/var/lib/tftpboot/createmd5.py'

@@ -23,10 +23,10 @@ one-lease-per-client true;
 # get-lease-hostnames true;
 
 # Domain name to distribute to clients
-option domain-name "corp.adobe.com";
+option domain-name "mydomain.com";
 
 # List of name servers to distribute to clients
-option domain-name-servers {{ dns_server1 }}, {{ dns_server2 }}, {{ dns_server3 }};
+option domain-name-servers 1.1.1.1;
 
 # Log to the local0 facility by default
 log-facility local0;
@@ -42,34 +42,11 @@ log-facility local0;
 #   - The broadcast address to use
 #   - The router to use
 #
-subnet 10.10.240.0 netmask 255.255.240.0 {}
 
-subnet {{ sjmgmtnet_at }}.0 netmask {{ dhcp_scope_sj_at.subnet }} {
-    #range {{ dhcp_scope_sj_at.start }} {{ dhcp_scope_sj_at.stop }};
-    option subnet-mask {{ dhcp_scope_sj_at.subnet }};
-    option broadcast-address {{ dhcp_scope_sj_at.broadcast }};
-    option routers {{ dhcp_scope_sj_at.defaultGateway }};
-}
-
-subnet {{ sjmgmtnet_et }}.0 netmask {{ dhcp_scope_sj_et.subnet }} {
-    #range {{ dhcp_scope_sj_et.start }} {{ dhcp_scope_sj_et.stop }};
-    option subnet-mask {{ dhcp_scope_sj_et.subnet }};
-    option broadcast-address {{ dhcp_scope_sj_et.broadcast }};
-    option routers {{ dhcp_scope_sj_et.defaultGateway }};
-}
-
-subnet {{ or1mgmtnet }}.0 netmask {{ dhcp_scope_or1.subnet }} {
-    #range {{ dhcp_scope_or1.start }} {{ dhcp_scope_or1.stop }};
-    option subnet-mask {{ dhcp_scope_or1.subnet }};
-    option broadcast-address {{ dhcp_scope_or1.broadcast }};
-    option routers {{ dhcp_scope_or1.defaultGateway }};
-}
-
-subnet {{ lehimgmtnet }}.0 netmask {{ dhcp_scope_lehi.subnet }} {
-    #range {{ dhcp_scope_lehi.start }} {{ dhcp_scope_lehi.stop }};
-    option subnet-mask {{ dhcp_scope_lehi.subnet }};
-    option broadcast-address {{ dhcp_scope_lehi.broadcast }};
-    option routers {{ dhcp_scope_lehi.defaultGateway }};
+subnet {{ management_network }} netmask {{ management_netmask }} {
+    option subnet-mask {{ management_netmask }};
+    option broadcast-address {{ management_broadcast }};
+    option routers {{ management_gateway }};
 }
 
 # Define host specific arguments
@@ -77,7 +54,7 @@ subnet {{ lehimgmtnet }}.0 netmask {{ dhcp_scope_lehi.subnet }} {
 host {{item.name}} {
     option dhcp-client-identifier "\000{{ item.sn }}";
     fixed-address {{ item.fixed_address }};
-    option routers {{ item.routers }};
+    option routers {{ item.default_gateway }};
     option host-name "{{item.name}}";
     option bootfile-name "{{ script_name }}";
     option tftp-server-name "{{ item.tftp_server_address }}";
