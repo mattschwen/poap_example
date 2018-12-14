@@ -1,0 +1,6 @@
+---
+- name: setup poap server
+  hosts: poap
+  become: true
+  roles:
+    - poap

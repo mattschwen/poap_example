@@ -1,0 +1,85 @@
+#
+# DHCP Server Configuration File
+#
+
+INTERFACES="ens3";
+
+# Configure the default and maximum lease times
+max-lease-time 3600;
+default-lease-time 3600;
+
+# Disable dynamic DNS updates
+ddns-update-style none;
+
+# Make the server authoritative for the network segments that
+# are configured, and tell it to send DHCPNAKs to bogus requests
+authoritative;
+
+# Allow each client to have exactly one lease, and expire
+# old leases if a new DHCPDISCOVER occurs
+one-lease-per-client true;
+
+# Tell the server to look up the host name in DNS
+# get-lease-hostnames true;
+
+# Domain name to distribute to clients
+option domain-name "corp.adobe.com";
+
+# List of name servers to distribute to clients
+option domain-name-servers {{ dns_server1 }}, {{ dns_server2 }}, {{ dns_server3 }};
+
+# Log to the local0 facility by default
+log-facility local0;
+
+# Ping the IP address that is being offered to make sure it isn't
+# configured on another node. This has some potential repercussions
+# for clients that don't like delays.
+# ping-check true;
+
+# Define a subnet with the following items:
+#   - Netmask to use
+#   - The IP range to distribute to clients
+#   - The broadcast address to use
+#   - The router to use
+#
+subnet 10.10.240.0 netmask 255.255.240.0 {}
+
+subnet {{ sjmgmtnet_at }}.0 netmask {{ dhcp_scope_sj_at.subnet }} {
+    #range {{ dhcp_scope_sj_at.start }} {{ dhcp_scope_sj_at.stop }};
+    option subnet-mask {{ dhcp_scope_sj_at.subnet }};
+    option broadcast-address {{ dhcp_scope_sj_at.broadcast }};
+    option routers {{ dhcp_scope_sj_at.defaultGateway }};
+}
+
+subnet {{ sjmgmtnet_et }}.0 netmask {{ dhcp_scope_sj_et.subnet }} {
+    #range {{ dhcp_scope_sj_et.start }} {{ dhcp_scope_sj_et.stop }};
+    option subnet-mask {{ dhcp_scope_sj_et.subnet }};
+    option broadcast-address {{ dhcp_scope_sj_et.broadcast }};
+    option routers {{ dhcp_scope_sj_et.defaultGateway }};
+}
+
+subnet {{ or1mgmtnet }}.0 netmask {{ dhcp_scope_or1.subnet }} {
+    #range {{ dhcp_scope_or1.start }} {{ dhcp_scope_or1.stop }};
+    option subnet-mask {{ dhcp_scope_or1.subnet }};
+    option broadcast-address {{ dhcp_scope_or1.broadcast }};
+    option routers {{ dhcp_scope_or1.defaultGateway }};
+}
+
+subnet {{ lehimgmtnet }}.0 netmask {{ dhcp_scope_lehi.subnet }} {
+    #range {{ dhcp_scope_lehi.start }} {{ dhcp_scope_lehi.stop }};
+    option subnet-mask {{ dhcp_scope_lehi.subnet }};
+    option broadcast-address {{ dhcp_scope_lehi.broadcast }};
+    option routers {{ dhcp_scope_lehi.defaultGateway }};
+}
+
+# Define host specific arguments
+{% for item in dhcp_reservations %}
+host {{item.name}} {
+    option dhcp-client-identifier "\000{{ item.sn }}";
+    fixed-address {{ item.fixed_address }};
+    option routers {{ item.routers }};
+    option host-name "{{item.name}}";
+    option bootfile-name "{{ script_name }}";
+    option tftp-server-name "{{ item.tftp_server_address }}";
+}
+{% endfor %}

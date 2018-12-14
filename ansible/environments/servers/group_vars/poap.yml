@@ -1,0 +1,13 @@
+dhcp_reservations:
+  - boot_filename: '{{ image }}',
+    fixed_address: '2.2.2.2',
+    name: new_switch,
+    routers: '2.2.2.1',
+    sn: FOC232323232323,
+    subnet: '255.255.255.0',
+    tftp_server_address: '{{ scp_server }}'
+
+image: nxos.7.0.3.I4.8a.bin
+tftp_server: 1.1.1.1
+scp_server: 1.1.1.1
+script_name: poap.py

@@ -1,0 +1,65 @@
+#!/usr/bin/python
+#
+# mschwen@adobe.com
+#
+# import pdb; pdb.set_trace()
+
+import csv
+import pprint
+import requests
+import json
+import pprint
+import sys
+import os
+
+
+def main(regex):
+    """
+    Main function, calls on other functions, start of the script.
+    """
+    filesL = []
+
+    cmd1 = 'f=/var/lib/tftpboot/poap.py ; cat $f | sed '
+    cmd2 = '"/^#md5sum/d" '
+    cmd3 = '> $f.md5 ; sed -i '
+    cmd4 = '"s/^#md5sum=.*/#md5sum=\"'
+    cmd5 = '$(md5sum $f.md5 | sed '
+    cmd6 = '"s/ .*//"'
+    cmd7 = ')\"/" $f'
+
+    poapcmd = '%s%s%s%s%s%s%s' % (
+        cmd1, cmd2, cmd3, cmd4, cmd5, cmd6, cmd7
+    )
+
+    directory = os.path.dirname(os.path.realpath(__file__)) + '/'
+
+    for filename in os.listdir(directory):
+        if filename.endswith(('.md5')):
+            dfile = directory + filename
+            os.remove(dfile)
+        else:
+            pass
+
+    for filename in os.listdir(directory):
+        if (filename == 'createmd5.py') or (filename == 'poap.py'):
+            pass
+        else:
+            filesL.append(filename)
+
+    for file in filesL:
+        command = 'md5sum %s > %s.md5' % (directory + file, directory + file)
+        os.system(command)
+        print 'Created MD5 For: %s' % (file)
+
+    for filename in os.listdir(directory):
+        if 'poap.py' == filename:
+            os.system(poapcmd)
+            print 'Created MD5 For: %s' % (filename)
+        else:
+            pass
+
+    for filename in os.listdir(directory):
+        os.chmod(directory + filename, 0o777)
+
+if __name__ == '__main__':
+    main(main)
