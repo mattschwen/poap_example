@@ -1,21 +1,3 @@
----
-layout: post
-title: A Practical Implementation of Cisco POAP
-subtitle: Power-On Auto Provisioning
-bigimg: /img/highlands-in-winter.jpg
-tags: [cisco, poap, python, ansible, nexus, nxos, dhcp, power-on auto provisioning, aci]
-gh-repo: mattschwen/poap_example
-gh-badge: [star, fork, follow]
-
-# gh-repo: daattali/beautiful-jekyll
-# gh-badge: [star, fork, follow]
-# image: /img/hello_world.jpeg
-# layout: post
-# title: To be
-# subtitle: ... or not to be?
-# tags: [books, shakespeare, test]
-# bigimg: /img/path.jpg
----
 # Purpose
 
 The purpose of this post is to show a real world implementation of `POAP` using 100% `Opensource` tools like `Linux, Python and Ansible`. It would be helpful to have a basic understand of `Ansible` and `Python` but is not required. I have provided a `GIT` repository that will contain all the necessary `Ansible` files.
